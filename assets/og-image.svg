@@ -1,24 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <rect width="1200" height="630" fill="#f4f1ea"/>
-  <!-- hairline frame -->
-  <rect x="64" y="64" width="1072" height="502" fill="none" stroke="#1a1916" stroke-opacity="0.14"/>
+  <rect width="1200" height="630" fill="#16243B"/>
+  <rect x="64" y="64" width="1072" height="502" fill="none" stroke="#C2A14C" stroke-opacity="0.35"/>
+
+  <!-- crest rule -->
+  <rect x="100" y="150" width="54" height="2" fill="#C2A14C"/>
 
   <!-- eyebrow -->
-  <text x="104" y="150" font-family="Helvetica, Arial, sans-serif" font-size="20"
-        letter-spacing="4" font-weight="600" fill="#5b564c">DEMAND-LED LAND ORIGINATION</text>
+  <text x="100" y="196" font-family="Calibri, 'Segoe UI', Arial, sans-serif" font-size="20"
+        letter-spacing="6" font-weight="700" fill="#C2A14C">DEMAND-LED LAND ORIGINATION</text>
 
   <!-- headline -->
-  <text x="100" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="84"
-        font-weight="600" fill="#1a1916">We model the buyer</text>
-  <text x="100" y="392" font-family="Georgia, 'Times New Roman', serif" font-size="84"
-        font-weight="600" fill="#1a1916">before we touch the land.</text>
-
-  <!-- accent rule -->
-  <rect x="104" y="446" width="64" height="3" fill="#8a7250"/>
+  <text x="98" y="320" font-family="Georgia, 'Times New Roman', serif" font-size="76"
+        font-weight="400" fill="#FFFFFF">We model the buyer</text>
+  <text x="98" y="404" font-family="Georgia, 'Times New Roman', serif" font-size="76"
+        font-weight="400" fill="#FFFFFF">before we touch the land.</text>
 
   <!-- wordmark -->
-  <text x="104" y="522" font-family="Georgia, 'Times New Roman', serif" font-size="34"
-        font-weight="600" fill="#1a1916">Mayfair</text>
-  <text x="1096" y="522" text-anchor="end" font-family="Helvetica, Arial, sans-serif"
-        font-size="20" letter-spacing="2" fill="#8a8478">mayfaircre.com</text>
+  <text x="100" y="520" font-family="Georgia, 'Times New Roman', serif" font-size="34"
+        font-weight="400" letter-spacing="5" fill="#F6F1E7">MAYFAIR</text>
+  <text x="1096" y="520" text-anchor="end" font-family="Calibri, 'Segoe UI', Arial, sans-serif"
+        font-size="20" letter-spacing="2" fill="#D8BE78">mayfaircre.com</text>
 </svg>
