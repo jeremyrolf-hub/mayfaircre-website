@@ -108,7 +108,7 @@
           data.message
         );
         window.location.href =
-          "mailto:jeremy.rolf@mayfaircre.com?subject=" +
+          "mailto:acquisitions@mayfaircre.com?subject=" +
           encodeURIComponent("Mayfair inquiry — " + data.name) +
           "&body=" + body;
         setStatus("Opening your email client…", "success");
@@ -132,7 +132,7 @@
         })
         .catch(function () {
           setStatus(
-            "Something went wrong. Please email jeremy.rolf@mayfaircre.com directly.",
+            "Something went wrong. Please email acquisitions@mayfaircre.com directly.",
             "error"
           );
         })
