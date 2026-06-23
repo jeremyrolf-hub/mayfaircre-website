@@ -3,3 +3,6 @@ Thumbs.db
 *.log
 .claude/
 node_modules/
+
+# Internal working document — must never be published to the public site
+mayfair-architecture.html

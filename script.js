@@ -120,12 +120,9 @@
 
       fetch(ENDPOINT, {
         method: "POST",
-        body: new URLSearchParams(data) /* avoids CORS preflight on Apps Script */
+        mode: "no-cors", /* Apps Script sends no CORS headers; opaque response is expected */
+        body: new URLSearchParams(data) /* urlencoded => simple request, no preflight */
       })
-        .then(function (res) {
-          if (!res.ok) throw new Error("Network response was not ok");
-          return res.json().catch(function () { return {}; });
-        })
         .then(function () {
           form.reset();
           setStatus("Thank you. We'll be in touch shortly.", "success");
