@@ -10,40 +10,53 @@ failure, so it is called out explicitly below.
 
 ---
 
-## Step 1 — GitHub repository + Pages
+## Step 1 — GitHub repository + Pages (GitHub Desktop, no terminal)
 
 The local repo is already committed and contains a `CNAME` file set to `mayfaircre.com`,
-which tells GitHub Pages your custom domain automatically on first build.
+which tells GitHub Pages your custom domain automatically on first build. GitHub Desktop
+will both create the GitHub repo and push your folder in one step — it handles login for
+you, so no Personal Access Token is needed.
 
-### 1a. Create the empty repo on GitHub
-1. Go to <https://github.com/new>.
-2. **Owner:** `jeremyrolf-hub` · **Repository name:** `mayfaircre-website`.
-3. **Public**. Do **not** add a README, .gitignore, or license (the repo already has files).
-4. Click **Create repository**.
+### 1a. (Only if needed) install / sign in to GitHub Desktop
+- **Install:** go to <https://desktop.github.com>, click **Download for Windows**, run the
+  installer.
+- **Sign in:** on first launch click **Sign in to GitHub.com** (or **File → Options →
+  Accounts → Sign in**). Sign in as **jeremyrolf-hub**. You can skip/confirm the
+  "configure Git" name/email screen with **Continue**.
 
-### 1b. Push the local repo
-Run these from the project folder (`C:\Users\jerem\Documents\mayfaircre-website`).
-HTTPS is simplest; GitHub will prompt for your username and a **Personal Access Token**
-(not your password) — create one at <https://github.com/settings/tokens> if needed
-(classic token, scope: `repo`).
+### 1b. Add your local folder to GitHub Desktop
+1. Menu bar: **File → Add Local Repository…**
+2. Click **Choose…** and browse to `C:\Users\jerem\Documents\mayfaircre-website`.
+3. Click **Select Folder**, then **Add Repository**.
+   (It's already a Git repo, so Desktop adds it directly. The left panel will show recent
+   commits like "Add deploy artifacts…".)
 
-```bash
-git remote add origin https://github.com/jeremyrolf-hub/mayfaircre-website.git
-git push -u origin main
-```
+### 1c. Publish (this creates the public repo AND pushes)
+1. At the top of the window click the **Publish repository** button.
+2. In the dialog:
+   - **Name:** `mayfaircre-website`
+   - **Description:** optional
+   - **⚠️ Uncheck "Keep this code private"** — it must be **public** for free GitHub Pages.
+   - **Organization / owner:** leave as **jeremyrolf-hub**.
+3. Click **Publish repository**. When the top button changes to **Fetch origin**, the push
+   is done. Your repo is now at
+   `https://github.com/jeremyrolf-hub/mayfaircre-website`.
 
-### 1c. Enable GitHub Pages
-1. Repo → **Settings** → **Pages** (left sidebar).
-2. **Build and deployment → Source:** *Deploy from a branch*.
-3. **Branch:** `main` · **Folder:** `/ (root)` → **Save**.
-4. Under **Custom domain** you should already see `mayfaircre.com` (from the `CNAME`
-   file). If it's blank, type `mayfaircre.com` and click **Save**.
-5. Leave **Enforce HTTPS** unchecked for now — it can't be enabled until DNS resolves
-   and GitHub issues the certificate (you'll come back to it at the end of Step 2).
+### 1d. Enable GitHub Pages (in the browser)
+1. Open <https://github.com/jeremyrolf-hub/mayfaircre-website> → **Settings** (top tab) →
+   **Pages** (left sidebar).
+2. **Build and deployment → Source:** choose **Deploy from a branch**.
+3. **Branch:** `main` · **Folder:** `/ (root)` → click **Save**.
+4. **Custom domain** should already show `mayfaircre.com` (from the `CNAME` file). If it's
+   blank, type `mayfaircre.com` and click **Save**.
+5. Leave **Enforce HTTPS** unchecked for now — it can't be turned on until DNS resolves
+   (you'll return to it at the end of Step 2).
 
 GitHub will show "DNS check in progress" until Step 2 is done. That's expected.
 
-➡️ **Tell me once 1a–1c are done** (or paste any error from `git push`).
+➡️ **Report back:** (a) that **Publish repository** finished, and (b) what the **Custom
+domain** box on the Pages screen says (it should read `mayfaircre.com`). Then we go to
+Step 2.
 
 ---
 
