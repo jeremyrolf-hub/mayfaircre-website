@@ -5,7 +5,7 @@
   /* ----- Apps Script endpoint -----------------------------------------
      Paste the deployed Web App URL here (see DEPLOY.md, Apps Script step).
      Until set, the form falls back to a mailto: so it never silently fails. */
-  var ENDPOINT = "";
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbzSqnMVebK1lFJ73qJGkZkUqhO-kVSUQvM1-klv8n8OLGLxGUU2bwHgGxWnXNjGJhPm/exec";
   /* -------------------------------------------------------------------- */
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
