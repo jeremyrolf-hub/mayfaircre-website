@@ -384,16 +384,18 @@ img, svg { display: block; max-width: 100%; }
    ========================================================================= */
 .about-grid {
   display: grid;
-  grid-template-columns: 1.65fr 1fr;
+  grid-template-columns: 1fr;
   gap: clamp(28px, 5vw, 60px);
   align-items: start;
 }
+.about-bio { max-width: 60ch; }
 .about-bio p {
   font-family: var(--serif);
   color: var(--navy);
   font-size: clamp(18px, 1.9vw, 24px);
   line-height: 1.46;
 }
+.about-bio p + p { margin-top: 0.9em; }
 .creds-card {
   background: var(--navy);
   border-top: 2px solid var(--gold);
