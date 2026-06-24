@@ -111,55 +111,52 @@ the traffic**. Every record above must be grey, not orange.
 
 ---
 
-## Step 3 — mayfaircre.net → 301 redirect to mayfaircre.com
+## Step 3 — mayfaircre.net → 301 redirect to mayfaircre.com (Squarespace)
 
-Goal: every `mayfaircre.net` (and `www.mayfaircre.net`) request 301-redirects to the same
-path on `mayfaircre.com`, so the site is never indexed on two domains. On Cloudflare's
-free plan this is done with a **Redirect Rule**. A redirect rule only fires for traffic
-that reaches Cloudflare's edge, so `.net` needs a **proxied** placeholder DNS record.
+> Both domains are registered at **Squarespace**, so this uses Squarespace's built-in
+> **Domain Forwarding** (not a Cloudflare rule). Goal: every `mayfaircre.net` request
+> permanently (301) redirects to `https://mayfaircre.com`, so the site is never served or
+> indexed on two domains.
 
-In Cloudflare: **dashboard → select the `mayfaircre.net` zone**.
+### 3a. Open the domain
+1. Sign in at <https://account.squarespace.com> with the account that holds the domains.
+2. Go to **Domains** → click **mayfaircre.net** to open its dashboard.
 
-### 3a. Add proxied placeholder DNS records
-**DNS → Records → + Add record.** The IP `192.0.2.1` is a reserved test address that is
-never actually contacted — Cloudflare serves the redirect at the edge before any origin
-lookup. These records **must be orange (Proxied)**, the opposite of Step 2.
+### 3b. Add the forward
+1. In the domain's settings, open the **Forwarding** section (labeled **Domain
+   Forwarding** / **Web Forwarding**). Click **Add** / **Forward domain**.
+2. Set:
+   - **Forward to / Destination URL:** `https://mayfaircre.com`
+   - **Forwarding type:** **Permanent (301)** — *not* Temporary (302).
+   - **Path forwarding / Preserve path:** **On** if offered (so `/x` on `.net` → `/x` on
+     `.com`). Optional but nicer.
+3. **Save.**
 
-| Type | Name  | Value         | Proxy status   | TTL  |
-|------|-------|---------------|----------------|------|
-| A    | `@`   | `192.0.2.1`   | **Proxied** 🟠 | Auto |
-| A    | `www` | `192.0.2.1`   | **Proxied** 🟠 | Auto |
+### 3c. Cover www too
+- If the forward applies to the whole domain (root **and** subdomains), you're done.
+- If it only covers the root, add a second forward for **`www.mayfaircre.net`** →
+  `https://mayfaircre.com` (same Permanent/301 setting), or confirm the "forward all
+  subdomains / include www" toggle is on.
 
-### 3b. Create the Redirect Rule
-1. Left sidebar → **Rules → Redirect Rules → Create rule** (also reachable under
-   **Rules → Overview**). Name it `net to com 301`.
-2. **When incoming requests match… → Custom filter expression.** Set:
-   - **Field:** Hostname · **Operator:** ends with · **Value:** `mayfaircre.net`
+Squarespace auto-configures the `.net` DNS and provisions SSL for the forward; allow a few
+minutes to an hour. Leave `.net` DNS otherwise empty — do **not** add GitHub A records to
+`.net`.
 
-   (Click **Edit expression** if you prefer to paste it directly:)
-   ```
-   (ends_with(http.host, "mayfaircre.net"))
-   ```
-3. **Then… → URL redirect.**
-   - **Type:** *Dynamic*
-   - **Expression** (click the expression box and paste):
-     ```
-     concat("https://mayfaircre.com", http.request.uri.path)
-     ```
-   - **Status code:** `301`
-   - **Preserve query string:** **On**
-4. **Deploy.**
+### 3d. Verify
+- Visit <http://mayfaircre.net> and <http://www.mayfaircre.net> — both should land on
+  `https://mayfaircre.com`.
+- It should be a **301** (permanent). The site's HTML also carries
+  `<link rel="canonical" href="https://mayfaircre.com/">`, which reinforces single-domain
+  indexing.
 
-### 3c. Verify
-- Visit <http://mayfaircre.net> and <https://www.mayfaircre.net/anything> — both should
-  land on `https://mayfaircre.com/...` with the path preserved.
-- Confirm it's a **301** (not 302): in your browser DevTools → Network, the first response
-  status should be `301`. A 301 is what keeps `.net` out of the search index.
+### Fallback (only if Squarespace won't do a clean 301)
+If the forwarding UI offers only a 302/temporary forward, the cleanest alternative is to
+move **mayfaircre.net** (its nameservers only) to a free **Cloudflare** account and use a
+**Redirect Rule** (proxied `192.0.2.1` placeholder records + a dynamic 301 to
+`concat("https://mayfaircre.com", http.request.uri.path)`). Ask and I'll write those exact
+clicks.
 
-> SSL note for `.net`: Cloudflare's Universal SSL (on by default) provides the edge
-> certificate, so `https://mayfaircre.net` redirects cleanly. No GitHub involvement here.
-
-➡️ **Tell me once the `.net` redirect works.**
+➡️ **Tell me once visiting `mayfaircre.net` redirects to `mayfaircre.com`.**
 
 ---
 
