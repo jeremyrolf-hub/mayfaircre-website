@@ -1,12 +1,12 @@
 # Mayfair — Deployment Guide
 
 Canonical domain: **mayfaircre.com** · Second domain: **mayfaircre.net** → 301 → mayfaircre.com
-Host: **GitHub Pages** · Registrar + DNS: **Cloudflare** · Form backend: **Google Apps Script**
+Host: **GitHub Pages** · Form backend: **Google Apps Script**
+DNS for **mayfaircre.com**: **Squarespace** (registrar + DNS).
+DNS for **mayfaircre.net**: **Cloudflare** (free plan), used only to 301-redirect to .com.
 
 Work through the steps in order. Nothing in Step 2 or 3 will work until the repo is
-pushed (Step 1) and GitHub Pages is enabled. SSL on the apex domain depends on every
-Cloudflare record being **DNS only (grey cloud)** — this is the single most common
-failure, so it is called out explicitly below.
+pushed (Step 1) and GitHub Pages is enabled.
 
 ---
 
@@ -60,101 +60,99 @@ Step 2.
 
 ---
 
-## Step 2 — Cloudflare DNS for mayfaircre.com (canonical)
+## Step 2 — Squarespace DNS for mayfaircre.com (canonical)
 
-In Cloudflare: **dashboard → select the `mayfaircre.com` zone → DNS → Records**.
+`mayfaircre.com` is registered at **Squarespace**, which also hosts its DNS. Squarespace
+has no proxy layer, so every record is plain DNS (no "grey/orange cloud" toggle to worry
+about).
 
-### 2a. Delete conflicting records first
-Remove any existing `A`, `AAAA`, or `CNAME` record on the root (`@` / `mayfaircre.com`)
-and on `www` that points somewhere else (e.g. a parking page). Leave MX/TXT (email)
-records alone.
+In Squarespace: **Domains → mayfaircre.com → DNS / DNS Settings**.
+
+### 2a. Remove the Squarespace defaults that conflict
+Delete the **Squarespace Defaults** block (the parking `A`/`CNAME` records pointing at
+Squarespace). **Leave the Google Workspace MX records intact** (email).
 
 ### 2b. Add the four apex A records
-These IPs are GitHub's currently documented Pages apex addresses (verified against
-GitHub's official docs). Click **+ Add record** four times:
+GitHub's currently documented Pages apex IPs (verified against GitHub's official docs).
+Add four `A` records on host `@`:
 
-| Type | Name (apex) | IPv4 address      | Proxy status      | TTL  |
-|------|-------------|-------------------|-------------------|------|
-| A    | `@`         | `185.199.108.153` | **DNS only**      | Auto |
-| A    | `@`         | `185.199.109.153` | **DNS only**      | Auto |
-| A    | `@`         | `185.199.110.153` | **DNS only**      | Auto |
-| A    | `@`         | `185.199.111.153` | **DNS only**      | Auto |
-
-(Using `@` as the name targets the root domain `mayfaircre.com`.)
+| Type | Host | Value             |
+|------|------|-------------------|
+| A    | `@`  | `185.199.108.153` |
+| A    | `@`  | `185.199.109.153` |
+| A    | `@`  | `185.199.110.153` |
+| A    | `@`  | `185.199.111.153` |
 
 ### 2c. Add the www CNAME
 
-| Type  | Name  | Target                      | Proxy status | TTL  |
-|-------|-------|-----------------------------|--------------|------|
-| CNAME | `www` | `jeremyrolf-hub.github.io`  | **DNS only** | Auto |
+| Type  | Host  | Value                      |
+|-------|-------|----------------------------|
+| CNAME | `www` | `jeremyrolf-hub.github.io`  |
 
-Note: the CNAME target is `jeremyrolf-hub.github.io` — your user subdomain, **with no
-repository name** on the end.
+The CNAME value is `jeremyrolf-hub.github.io` — your user subdomain, **with no repository
+name** on the end.
 
-### 2d. ⚠️ CRITICAL: set every record to "DNS only" (grey cloud)
-GitHub Pages provisions its own SSL certificate and that **fails if Cloudflare proxies
-the traffic**. Every record above must be grey, not orange.
-
-- In **DNS → Records**, look at the **Proxy status** column on each row.
-- If a row shows an **orange cloud** labeled "Proxied", **click the orange cloud once** —
-  it turns **grey** and the label changes to **"DNS only"**.
-- Do this for all four `A` records **and** the `www` CNAME. All five must read **DNS only**.
-
-### 2e. Finish HTTPS on GitHub
-- DNS usually resolves within minutes (can take up to an hour). Then in the GitHub repo:
-  **Settings → Pages** — the banner changes to a green "DNS check successful."
+### 2d. Finish HTTPS on GitHub
+- DNS usually resolves within minutes (up to an hour). In the GitHub repo: **Settings →
+  Pages** → **Check again** until the banner reads "DNS check successful."
 - Once GitHub shows the certificate is issued, tick **Enforce HTTPS**.
-- Verify: <https://mayfaircre.com> and <https://www.mayfaircre.com> both load the site
-  over HTTPS with no certificate warning.
+- Verify: <https://mayfaircre.com> and <https://www.mayfaircre.com> both load over HTTPS.
 
-➡️ **Tell me once both URLs load over HTTPS** (or paste what GitHub's Pages banner says).
+➡️ **Status:** A records + www CNAME added on Squarespace, defaults removed, MX intact. ✔
 
 ---
 
-## Step 3 — mayfaircre.net → 301 redirect to mayfaircre.com (Squarespace)
+## Step 3 — mayfaircre.net → 301 redirect to mayfaircre.com (Cloudflare)
 
-> Both domains are registered at **Squarespace**, so this uses Squarespace's built-in
-> **Domain Forwarding** (not a Cloudflare rule). Goal: every `mayfaircre.net` request
-> permanently (301) redirects to `https://mayfaircre.com`, so the site is never served or
-> indexed on two domains.
+`mayfaircre.net` is on a **free Cloudflare plan** (zone Active). We redirect *all* `.net`
+traffic — root and www — to `https://mayfaircre.com` with a **Redirect Rule**. A redirect
+rule only fires for traffic that reaches Cloudflare's edge, so `.net` first needs a
+**proxied** placeholder DNS record (it currently resolves to nothing — NXDOMAIN).
 
-### 3a. Open the domain
-1. Sign in at <https://account.squarespace.com> with the account that holds the domains.
-2. Go to **Domains** → click **mayfaircre.net** to open its dashboard.
+In Cloudflare: **dashboard → select the `mayfaircre.net` zone**.
 
-### 3b. Add the forward
-1. In the domain's settings, open the **Forwarding** section (labeled **Domain
-   Forwarding** / **Web Forwarding**). Click **Add** / **Forward domain**.
-2. Set:
-   - **Forward to / Destination URL:** `https://mayfaircre.com`
-   - **Forwarding type:** **Permanent (301)** — *not* Temporary (302).
-   - **Path forwarding / Preserve path:** **On** if offered (so `/x` on `.net` → `/x` on
-     `.com`). Optional but nicer.
-3. **Save.**
+### 3a. Add proxied placeholder DNS records
+**DNS → Records → + Add record.** `192.0.2.1` is a reserved test address that is never
+contacted — Cloudflare serves the redirect at the edge before any origin lookup. These
+records **must be Proxied (orange cloud)** so the rule fires.
 
-### 3c. Cover www too
-- If the forward applies to the whole domain (root **and** subdomains), you're done.
-- If it only covers the root, add a second forward for **`www.mayfaircre.net`** →
-  `https://mayfaircre.com` (same Permanent/301 setting), or confirm the "forward all
-  subdomains / include www" toggle is on.
+| Type | Name  | IPv4 address  | Proxy status   | TTL  |
+|------|-------|---------------|----------------|------|
+| A    | `@`   | `192.0.2.1`   | **Proxied** 🟠 | Auto |
+| A    | `www` | `192.0.2.1`   | **Proxied** 🟠 | Auto |
 
-Squarespace auto-configures the `.net` DNS and provisions SSL for the forward; allow a few
-minutes to an hour. Leave `.net` DNS otherwise empty — do **not** add GitHub A records to
-`.net`.
+If either saves as grey ("DNS only"), click the cloud once to turn it **orange
+(Proxied)**. Both must be orange — the opposite of how Step 2's records would be on
+Cloudflare.
 
-### 3d. Verify
-- Visit <http://mayfaircre.net> and <http://www.mayfaircre.net> — both should land on
-  `https://mayfaircre.com`.
-- It should be a **301** (permanent). The site's HTML also carries
-  `<link rel="canonical" href="https://mayfaircre.com/">`, which reinforces single-domain
-  indexing.
+### 3b. Create the Redirect Rule
+1. Left sidebar → **Rules → Redirect Rules → Create rule**. Name it `net to com 301`.
+2. **When incoming requests match… → Custom filter expression:**
+   - **Field:** Hostname · **Operator:** ends with · **Value:** `mayfaircre.net`
 
-### Fallback (only if Squarespace won't do a clean 301)
-If the forwarding UI offers only a 302/temporary forward, the cleanest alternative is to
-move **mayfaircre.net** (its nameservers only) to a free **Cloudflare** account and use a
-**Redirect Rule** (proxied `192.0.2.1` placeholder records + a dynamic 301 to
-`concat("https://mayfaircre.com", http.request.uri.path)`). Ask and I'll write those exact
-clicks.
+   (This matches both `mayfaircre.net` and `www.mayfaircre.net`. To paste directly, use
+   **Edit expression**:)
+   ```
+   (ends_with(http.host, "mayfaircre.net"))
+   ```
+3. **Then… → URL redirect:**
+   - **Type:** *Dynamic*
+   - **Expression** (paste into the expression box):
+     ```
+     concat("https://mayfaircre.com", http.request.uri.path)
+     ```
+   - **Status code:** `301`
+   - **Preserve query string:** **On**
+4. **Deploy.**
+
+### 3c. Verify
+- Give it a few minutes (DNS for the new records + rule activation; SSL on a newly active
+  zone can take a little longer). Use a fresh/incognito window — your browser may have
+  cached the NXDOMAIN.
+- Visit <http://mayfaircre.net> and <http://www.mayfaircre.net/anything> — both should land
+  on `https://mayfaircre.com/...` with the path preserved, as a **301**.
+- The site's HTML also carries `<link rel="canonical" href="https://mayfaircre.com/">`,
+  reinforcing single-domain indexing.
 
 ➡️ **Tell me once visiting `mayfaircre.net` redirects to `mayfaircre.com`.**
 
