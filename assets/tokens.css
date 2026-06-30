@@ -1,0 +1,28 @@
+/* GENERATED from mayfair-brand/tokens.json — do not edit by hand. */
+
+:root {
+  /* ---- color ---- */
+  --navy:  #16243B; /* primary, backgrounds, headlines on cream */
+  --gold:  #C2A14C; /* accent only — rules, dividers, small marks */
+  --cream: #F6F1E7; /* page ground */
+  --white: #FFFFFF; /* sparingly — card surfaces on cream */
+  --ink:   #1A1A1A; /* long body text where navy reads too heavy */
+
+  /* ---- type families ---- */
+  --font-display: Georgia, serif;      /* H1–H3, section numbers */
+  --font-body:    Calibri, sans-serif; /* body, labels, nav, forms, captions */
+
+  /* ---- type scale ---- */
+  --scale-h1:   clamp(40px, 6vw, 56px);
+  --scale-h2:   clamp(28px, 4vw, 36px);
+  --scale-h3:   20px;
+  --scale-body: 17px;
+  --scale-label-size:     12px;   /* uppercase */
+  --scale-label-tracking: 0.12em;
+
+  /* ---- space ---- */
+  --space-section:  96px;
+  --space-block:    32px;
+  --space-hairline: 1px;                      /* gold @ 30% opacity */
+  --hairline-color: rgba(194, 161, 76, 0.30);
+}
