@@ -6,7 +6,7 @@
   --gold:  #C2A14C; /* accent only — rules, dividers, small marks */
   --cream: #F6F1E7; /* page ground */
   --white: #FFFFFF; /* sparingly — card surfaces on cream */
-  --ink:   #2B2B2B; /* long body text where navy reads too heavy */
+  --ink:   #1A1A1A; /* long body text where navy reads too heavy */
 
   /* ---- type families ---- */
   --font-display: Georgia, serif;      /* H1–H3, section numbers */
